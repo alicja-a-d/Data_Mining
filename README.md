@@ -2,15 +2,27 @@
 
 Overleaf link: https://www.overleaf.com/4662494197drnchxjqfhfn#9b3bdd
 
+Pipline
+  A[Load dataset] --> B[Remove negative values]
+  B --> C[Daily pivot & merge]
+  C --> D[Add day/month/weekend]
+  D --> E[Drop old gaps + resample daily]
+  E --> F[Zero-fill app/sensor sums]
+  F --> G[Impute self-report daily features]
+  G --> H[Feature engineering]
+  H --> I[Build instances from past windows]
+  I --> J1[XGBoost classification]
+  I --> J2[LSTM classification]
+  I --> J3[XGBoost regression]
+  I --> J4[LSTM regression]
 
-
-ML_WORKFLOW/
+Classification/Regression_Workflow/
 ├── 1. DATA PARTITIONING
 │   ├── Train Set (80%) ───────────────┐
 │   └── Test Set (20%; locked away)─┐  │
 │                                   │  │
 ├── 2. BASELINE EVALUATION             │
-│   └── Model: XGBoost (Default) <─────┘
+│   └── Model: XGBoost/LSTM   <─────┘
 │       └── Goal: to establish baseline performance
 │
 ├── 3. HYPERPARAMETER OPTIMIZATION
@@ -20,7 +32,7 @@ ML_WORKFLOW/
 │       └── Output: Best_Params_
 │
 ├── 4. STABILITY VALIDATION
-│   └── 5-Fold TimeSeriesSplit (using best parameters )
+│   └── 5-Fold TimeSeriesSplit (using best parameters)
 │       └── Goal: check variance across temporal windows
 │
 ├── 5. MODEL FINALIZATION
