@@ -1,0 +1,711 @@
+(python3_env) sh-5.1$ python dmt_knn_7.py
+Loading data...
+  Train: (4958347, 54)
+  Test:  (4959183, 50)
+
+Preprocessing...
+
+Splitting train/val...
+  Train: 3,964,501 rows | 159,836 searches
+  Val:   993,846 rows   | 39,959 searches
+
+Engineering features...
+  Columns — train: 71 | val: 71 | test: 68
+
+================================================================================
+PART 1: DATA-LEVEL BIAS ANALYSIS (BOOKING & IMPRESSION RATES)
+================================================================================
+
+--- Feature: prop_brand_bool ---
+                 Impression Share  Booking Rate  Click Rate
+prop_brand_bool                                            
+0                          0.3652        0.0257      0.0446
+1                          0.6348        0.0292      0.0449
+  Ratio (Class 1 / Class 0) -> Booking: 1.13x | Click: 1.01x
+
+--- Feature: new_customer ---
+              Impression Share  Booking Rate  Click Rate
+new_customer                                            
+0                       0.0509        0.0359      0.0440
+1                       0.9491        0.0275      0.0448
+  Ratio (Class 1 / Class 0) -> Booking: 0.76x | Click: 1.02x
+
+--- Feature: is_cheapest_in_srch ---
+                     Impression Share  Booking Rate  Click Rate
+is_cheapest_in_srch                                            
+0                              0.9558        0.0269      0.0431
+1                              0.0442        0.0506      0.0808
+  Ratio (Class 1 / Class 0) -> Booking: 1.89x | Click: 1.87x
+
+--- Feature: is_best_review ---
+                Impression Share  Booking Rate  Click Rate
+is_best_review                                            
+0                         0.8383        0.0273      0.0440
+1                         0.1617        0.0308      0.0491
+  Ratio (Class 1 / Class 0) -> Booking: 1.13x | Click: 1.12x
+
+--- Feature: is_best_star ---
+              Impression Share  Booking Rate  Click Rate
+is_best_star                                            
+0                       0.7784        0.0250      0.0400
+1                       0.2216        0.0381      0.0614
+  Ratio (Class 1 / Class 0) -> Booking: 1.52x | Click: 1.53x
+
+--- Feature: random_bool ---
+             Impression Share  Booking Rate  Click Rate
+random_bool                                            
+0                      0.7037        0.0374      0.0440
+1                      0.2963        0.0053      0.0467
+  Ratio (Class 1 / Class 0) -> Booking: 0.14x | Click: 1.06x
+
+--- Feature: srch_saturday_night_bool ---
+                          Impression Share  Booking Rate  Click Rate
+srch_saturday_night_bool                                            
+0                                   0.4972        0.0270      0.0445
+1                                   0.5028        0.0288      0.0451
+  Ratio (Class 1 / Class 0) -> Booking: 1.07x | Click: 1.01x
+
+--- Feature: is_last_minute ---
+                Impression Share  Booking Rate  Click Rate
+is_last_minute                                            
+0                         0.7770        0.0264      0.0449
+1                         0.2230        0.0330      0.0445
+  Ratio (Class 1 / Class 0) -> Booking: 1.25x | Click: 0.99x
+
+--- Feature: is_long_stay ---
+              Impression Share  Booking Rate  Click Rate
+is_long_stay                                            
+0                       0.9526        0.0285      0.0447
+1                       0.0474        0.0152      0.0466
+  Ratio (Class 1 / Class 0) -> Booking: 0.53x | Click: 1.04x
+
+================================================================================
+PART 2: MODEL-LEVEL BIAS ANALYSIS (RANKING & METRIC CHECKS)
+================================================================================
+
+=== Training KNN baseline (detection only) ===
+
+Starting KNN Cross-Validation Grid Search...
+Fitting 5 folds for each of 28 candidates, totalling 140 fits
+[CV] END knn__metric=minkowski, knn__n_neighbors=40, knn__weights=distance, scaler=RobustScaler(); total time=  10.6s
+[CV] END knn__metric=minkowski, knn__n_neighbors=40, knn__weights=distance, scaler=StandardScaler(); total time=  11.1s
+[CV] END knn__metric=minkowski, knn__n_neighbors=40, knn__weights=distance, scaler=RobustScaler(); total time=  11.1s
+[CV] END knn__metric=minkowski, knn__n_neighbors=40, knn__weights=distance, scaler=StandardScaler(); total time=  11.2s
+[CV] END knn__metric=minkowski, knn__n_neighbors=40, knn__weights=distance, scaler=StandardScaler(); total time=  11.2s
+[CV] END knn__metric=minkowski, knn__n_neighbors=50, knn__weights=distance, scaler=RobustScaler(); total time=  11.3s
+[CV] END knn__metric=minkowski, knn__n_neighbors=40, knn__weights=distance, scaler=RobustScaler(); total time=  11.4s
+[CV] END knn__metric=minkowski, knn__n_neighbors=50, knn__weights=distance, scaler=RobustScaler(); total time=  11.3s
+[CV] END knn__metric=minkowski, knn__n_neighbors=40, knn__weights=distance, scaler=RobustScaler(); total time=  11.4s
+[CV] END knn__metric=minkowski, knn__n_neighbors=50, knn__weights=distance, scaler=RobustScaler(); total time=  11.4s
+[CV] END knn__metric=minkowski, knn__n_neighbors=65, knn__weights=distance, scaler=StandardScaler(); total time=  11.4s
+[CV] END knn__metric=minkowski, knn__n_neighbors=50, knn__weights=distance, scaler=StandardScaler(); total time=  11.5s
+[CV] END knn__metric=minkowski, knn__n_neighbors=50, knn__weights=distance, scaler=RobustScaler(); total time=  11.5s
+[CV] END knn__metric=minkowski, knn__n_neighbors=50, knn__weights=distance, scaler=StandardScaler(); total time=  11.6s
+[CV] END knn__metric=minkowski, knn__n_neighbors=65, knn__weights=distance, scaler=StandardScaler(); total time=  11.7s
+[CV] END knn__metric=minkowski, knn__n_neighbors=65, knn__weights=distance, scaler=RobustScaler(); total time=  11.4s
+[CV] END knn__metric=minkowski, knn__n_neighbors=50, knn__weights=distance, scaler=StandardScaler(); total time=  11.7s
+[CV] END knn__metric=minkowski, knn__n_neighbors=80, knn__weights=distance, scaler=RobustScaler(); total time=  11.5s
+[CV] END knn__metric=minkowski, knn__n_neighbors=65, knn__weights=distance, scaler=RobustScaler(); total time=  11.6s
+[CV] END knn__metric=minkowski, knn__n_neighbors=65, knn__weights=distance, scaler=StandardScaler(); total time=  11.7s
+[CV] END knn__metric=minkowski, knn__n_neighbors=90, knn__weights=distance, scaler=RobustScaler(); total time=  11.5s
+[CV] END knn__metric=minkowski, knn__n_neighbors=40, knn__weights=distance, scaler=StandardScaler(); total time=  12.1s
+[CV] END knn__metric=minkowski, knn__n_neighbors=40, knn__weights=distance, scaler=RobustScaler(); total time=  12.0s
+[CV] END knn__metric=minkowski, knn__n_neighbors=40, knn__weights=distance, scaler=StandardScaler(); total time=  12.1s
+[CV] END knn__metric=minkowski, knn__n_neighbors=80, knn__weights=distance, scaler=RobustScaler(); total time=  11.7s
+[CV] END knn__metric=minkowski, knn__n_neighbors=80, knn__weights=distance, scaler=RobustScaler(); total time=  11.6s
+[CV] END knn__metric=minkowski, knn__n_neighbors=80, knn__weights=distance, scaler=StandardScaler(); total time=  11.9s
+[CV] END knn__metric=minkowski, knn__n_neighbors=65, knn__weights=distance, scaler=RobustScaler(); total time=  11.9s
+[CV] END knn__metric=minkowski, knn__n_neighbors=65, knn__weights=distance, scaler=RobustScaler(); total time=  12.0s
+[CV] END knn__metric=minkowski, knn__n_neighbors=80, knn__weights=distance, scaler=StandardScaler(); total time=  11.9s
+[CV] END knn__metric=minkowski, knn__n_neighbors=100, knn__weights=distance, scaler=RobustScaler(); total time=  11.6s
+[CV] END knn__metric=minkowski, knn__n_neighbors=80, knn__weights=distance, scaler=StandardScaler(); total time=  12.0s
+[CV] END knn__metric=minkowski, knn__n_neighbors=100, knn__weights=distance, scaler=RobustScaler(); total time=  11.6s
+[CV] END knn__metric=minkowski, knn__n_neighbors=50, knn__weights=distance, scaler=StandardScaler(); total time=  12.3s
+[CV] END knn__metric=minkowski, knn__n_neighbors=80, knn__weights=distance, scaler=StandardScaler(); total time=  12.0s
+[CV] END knn__metric=minkowski, knn__n_neighbors=100, knn__weights=distance, scaler=StandardScaler(); total time=  11.8s
+[CV] END knn__metric=minkowski, knn__n_neighbors=80, knn__weights=distance, scaler=StandardScaler(); total time=  12.1s
+[CV] END knn__metric=minkowski, knn__n_neighbors=65, knn__weights=distance, scaler=RobustScaler(); total time=  12.2s
+[CV] END knn__metric=minkowski, knn__n_neighbors=90, knn__weights=distance, scaler=RobustScaler(); total time=  11.9s
+[CV] END knn__metric=minkowski, knn__n_neighbors=100, knn__weights=distance, scaler=RobustScaler(); total time=  11.9s
+[CV] END knn__metric=minkowski, knn__n_neighbors=100, knn__weights=distance, scaler=StandardScaler(); total time=  12.0s
+[CV] END knn__metric=minkowski, knn__n_neighbors=65, knn__weights=distance, scaler=StandardScaler(); total time=  12.4s
+[CV] END knn__metric=minkowski, knn__n_neighbors=90, knn__weights=distance, scaler=StandardScaler(); total time=  12.2s
+[CV] END knn__metric=minkowski, knn__n_neighbors=50, knn__weights=distance, scaler=StandardScaler(); total time=  12.6s
+[CV] END knn__metric=minkowski, knn__n_neighbors=80, knn__weights=distance, scaler=RobustScaler(); total time=  12.4s
+[CV] END knn__metric=minkowski, knn__n_neighbors=50, knn__weights=distance, scaler=RobustScaler(); total time=  12.5s
+[CV] END knn__metric=minkowski, knn__n_neighbors=90, knn__weights=distance, scaler=RobustScaler(); total time=  12.2s
+[CV] END knn__metric=minkowski, knn__n_neighbors=80, knn__weights=distance, scaler=RobustScaler(); total time=  12.4s
+[CV] END knn__metric=minkowski, knn__n_neighbors=90, knn__weights=distance, scaler=StandardScaler(); total time=  12.5s
+[CV] END knn__metric=minkowski, knn__n_neighbors=65, knn__weights=distance, scaler=StandardScaler(); total time=  12.6s
+[CV] END knn__metric=minkowski, knn__n_neighbors=100, knn__weights=distance, scaler=StandardScaler(); total time=  12.2s
+[CV] END knn__metric=minkowski, knn__n_neighbors=100, knn__weights=distance, scaler=StandardScaler(); total time=  12.2s
+[CV] END knn__metric=minkowski, knn__n_neighbors=90, knn__weights=distance, scaler=StandardScaler(); total time=  12.5s
+[CV] END knn__metric=minkowski, knn__n_neighbors=90, knn__weights=distance, scaler=RobustScaler(); total time=  12.5s
+[CV] END knn__metric=minkowski, knn__n_neighbors=90, knn__weights=distance, scaler=StandardScaler(); total time=  12.6s
+[CV] END knn__metric=minkowski, knn__n_neighbors=90, knn__weights=distance, scaler=RobustScaler(); total time=  12.6s
+[CV] END knn__metric=minkowski, knn__n_neighbors=100, knn__weights=distance, scaler=StandardScaler(); total time=  12.7s
+[CV] END knn__metric=minkowski, knn__n_neighbors=90, knn__weights=distance, scaler=StandardScaler(); total time=  12.9s
+[CV] END knn__metric=minkowski, knn__n_neighbors=100, knn__weights=distance, scaler=RobustScaler(); total time=   8.1s
+[CV] END knn__metric=minkowski, knn__n_neighbors=100, knn__weights=distance, scaler=RobustScaler(); total time=   9.1s
+[CV] END knn__metric=minkowski, knn__n_neighbors=300, knn__weights=distance, scaler=StandardScaler(); total time=   9.6s
+[CV] END knn__metric=minkowski, knn__n_neighbors=300, knn__weights=distance, scaler=StandardScaler(); total time=   9.4s
+[CV] END knn__metric=minkowski, knn__n_neighbors=300, knn__weights=distance, scaler=RobustScaler(); total time=   9.4s
+[CV] END knn__metric=minkowski, knn__n_neighbors=300, knn__weights=distance, scaler=RobustScaler(); total time=   9.7s
+[CV] END knn__metric=minkowski, knn__n_neighbors=300, knn__weights=distance, scaler=RobustScaler(); total time=   9.7s
+[CV] END knn__metric=minkowski, knn__n_neighbors=300, knn__weights=distance, scaler=RobustScaler(); total time=   9.9s
+[CV] END knn__metric=minkowski, knn__n_neighbors=300, knn__weights=distance, scaler=StandardScaler(); total time=  10.9s
+[CV] END knn__metric=minkowski, knn__n_neighbors=300, knn__weights=distance, scaler=StandardScaler(); total time=  12.4s
+[CV] END knn__metric=minkowski, knn__n_neighbors=300, knn__weights=distance, scaler=StandardScaler(); total time=  13.2s
+[CV] END knn__metric=minkowski, knn__n_neighbors=300, knn__weights=distance, scaler=RobustScaler(); total time=  13.3s
+[CV] END knn__metric=manhattan, knn__n_neighbors=40, knn__weights=distance, scaler=StandardScaler(); total time=  42.7s
+[CV] END knn__metric=manhattan, knn__n_neighbors=80, knn__weights=distance, scaler=StandardScaler(); total time=  43.2s
+[CV] END knn__metric=manhattan, knn__n_neighbors=50, knn__weights=distance, scaler=StandardScaler(); total time=  43.7s
+[CV] END knn__metric=manhattan, knn__n_neighbors=65, knn__weights=distance, scaler=StandardScaler(); total time=  43.9s
+[CV] END knn__metric=manhattan, knn__n_neighbors=50, knn__weights=distance, scaler=RobustScaler(); total time=  43.9s
+[CV] END knn__metric=manhattan, knn__n_neighbors=90, knn__weights=distance, scaler=StandardScaler(); total time=  44.0s
+[CV] END knn__metric=manhattan, knn__n_neighbors=50, knn__weights=distance, scaler=RobustScaler(); total time=  44.1s
+[CV] END knn__metric=manhattan, knn__n_neighbors=80, knn__weights=distance, scaler=StandardScaler(); total time=  44.3s
+[CV] END knn__metric=manhattan, knn__n_neighbors=50, knn__weights=distance, scaler=StandardScaler(); total time=  44.3s
+[CV] END knn__metric=manhattan, knn__n_neighbors=50, knn__weights=distance, scaler=StandardScaler(); total time=  44.4s
+[CV] END knn__metric=manhattan, knn__n_neighbors=50, knn__weights=distance, scaler=StandardScaler(); total time=  44.4s
+[CV] END knn__metric=manhattan, knn__n_neighbors=100, knn__weights=distance, scaler=RobustScaler(); total time=  44.3s
+[CV] END knn__metric=manhattan, knn__n_neighbors=65, knn__weights=distance, scaler=RobustScaler(); total time=  44.5s
+[CV] END knn__metric=manhattan, knn__n_neighbors=65, knn__weights=distance, scaler=RobustScaler(); total time=  44.5s
+[CV] END knn__metric=manhattan, knn__n_neighbors=100, knn__weights=distance, scaler=StandardScaler(); total time=  44.4s
+[CV] END knn__metric=manhattan, knn__n_neighbors=80, knn__weights=distance, scaler=RobustScaler(); total time=  44.6s
+[CV] END knn__metric=manhattan, knn__n_neighbors=65, knn__weights=distance, scaler=RobustScaler(); total time=  44.9s
+[CV] END knn__metric=manhattan, knn__n_neighbors=65, knn__weights=distance, scaler=StandardScaler(); total time=  44.9s
+[CV] END knn__metric=manhattan, knn__n_neighbors=90, knn__weights=distance, scaler=RobustScaler(); total time=  45.0s
+[CV] END knn__metric=manhattan, knn__n_neighbors=65, knn__weights=distance, scaler=RobustScaler(); total time=  45.2s
+[CV] END knn__metric=manhattan, knn__n_neighbors=100, knn__weights=distance, scaler=RobustScaler(); total time=  45.3s
+[CV] END knn__metric=manhattan, knn__n_neighbors=65, knn__weights=distance, scaler=StandardScaler(); total time=  45.5s
+[CV] END knn__metric=manhattan, knn__n_neighbors=80, knn__weights=distance, scaler=RobustScaler(); total time=  45.6s
+[CV] END knn__metric=manhattan, knn__n_neighbors=40, knn__weights=distance, scaler=RobustScaler(); total time=  45.7s
+[CV] END knn__metric=manhattan, knn__n_neighbors=50, knn__weights=distance, scaler=RobustScaler(); total time=  45.9s
+[CV] END knn__metric=manhattan, knn__n_neighbors=80, knn__weights=distance, scaler=StandardScaler(); total time=  46.0s
+[CV] END knn__metric=manhattan, knn__n_neighbors=300, knn__weights=distance, scaler=RobustScaler(); total time=  45.9s
+[CV] END knn__metric=manhattan, knn__n_neighbors=300, knn__weights=distance, scaler=StandardScaler(); total time=  46.0s
+[CV] END knn__metric=manhattan, knn__n_neighbors=40, knn__weights=distance, scaler=StandardScaler(); total time=  46.4s
+[CV] END knn__metric=manhattan, knn__n_neighbors=65, knn__weights=distance, scaler=StandardScaler(); total time=  46.5s
+[CV] END knn__metric=manhattan, knn__n_neighbors=300, knn__weights=distance, scaler=RobustScaler(); total time=  46.2s
+[CV] END knn__metric=manhattan, knn__n_neighbors=65, knn__weights=distance, scaler=RobustScaler(); total time=  46.9s
+[CV] END knn__metric=manhattan, knn__n_neighbors=80, knn__weights=distance, scaler=RobustScaler(); total time=  47.0s
+[CV] END knn__metric=manhattan, knn__n_neighbors=90, knn__weights=distance, scaler=RobustScaler(); total time=  47.1s
+[CV] END knn__metric=manhattan, knn__n_neighbors=50, knn__weights=distance, scaler=StandardScaler(); total time=  47.6s
+[CV] END knn__metric=manhattan, knn__n_neighbors=65, knn__weights=distance, scaler=StandardScaler(); total time=  47.8s
+[CV] END knn__metric=manhattan, knn__n_neighbors=80, knn__weights=distance, scaler=StandardScaler(); total time=  48.0s
+[CV] END knn__metric=manhattan, knn__n_neighbors=90, knn__weights=distance, scaler=StandardScaler(); total time=  48.1s
+[CV] END knn__metric=manhattan, knn__n_neighbors=90, knn__weights=distance, scaler=RobustScaler(); total time=  48.2s
+[CV] END knn__metric=manhattan, knn__n_neighbors=100, knn__weights=distance, scaler=StandardScaler(); total time=  48.4s
+[CV] END knn__metric=manhattan, knn__n_neighbors=90, knn__weights=distance, scaler=RobustScaler(); total time=  48.3s
+[CV] END knn__metric=manhattan, knn__n_neighbors=80, knn__weights=distance, scaler=RobustScaler(); total time=  48.4s
+[CV] END knn__metric=manhattan, knn__n_neighbors=300, knn__weights=distance, scaler=StandardScaler(); total time=  48.4s
+[CV] END knn__metric=manhattan, knn__n_neighbors=100, knn__weights=distance, scaler=RobustScaler(); total time=  48.3s
+[CV] END knn__metric=manhattan, knn__n_neighbors=300, knn__weights=distance, scaler=RobustScaler(); total time=  48.5s
+[CV] END knn__metric=manhattan, knn__n_neighbors=300, knn__weights=distance, scaler=StandardScaler(); total time=  48.4s
+[CV] END knn__metric=manhattan, knn__n_neighbors=300, knn__weights=distance, scaler=StandardScaler(); total time=  48.6s
+[CV] END knn__metric=manhattan, knn__n_neighbors=90, knn__weights=distance, scaler=RobustScaler(); total time=  48.9s
+[CV] END knn__metric=manhattan, knn__n_neighbors=300, knn__weights=distance, scaler=StandardScaler(); total time=  48.7s
+[CV] END knn__metric=manhattan, knn__n_neighbors=90, knn__weights=distance, scaler=StandardScaler(); total time=  49.1s
+[CV] END knn__metric=manhattan, knn__n_neighbors=100, knn__weights=distance, scaler=StandardScaler(); total time=  49.0s
+[CV] END knn__metric=manhattan, knn__n_neighbors=80, knn__weights=distance, scaler=StandardScaler(); total time=  49.3s
+[CV] END knn__metric=manhattan, knn__n_neighbors=300, knn__weights=distance, scaler=RobustScaler(); total time=  49.0s
+[CV] END knn__metric=manhattan, knn__n_neighbors=40, knn__weights=distance, scaler=RobustScaler(); total time=  49.3s
+[CV] END knn__metric=manhattan, knn__n_neighbors=100, knn__weights=distance, scaler=StandardScaler(); total time=  49.4s
+[CV] END knn__metric=manhattan, knn__n_neighbors=90, knn__weights=distance, scaler=StandardScaler(); total time=  49.5s
+[CV] END knn__metric=manhattan, knn__n_neighbors=50, knn__weights=distance, scaler=RobustScaler(); total time=  49.9s
+[CV] END knn__metric=manhattan, knn__n_neighbors=40, knn__weights=distance, scaler=RobustScaler(); total time=  50.3s
+[CV] END knn__metric=manhattan, knn__n_neighbors=40, knn__weights=distance, scaler=RobustScaler(); total time=  51.0s
+[CV] END knn__metric=manhattan, knn__n_neighbors=100, knn__weights=distance, scaler=RobustScaler(); total time=  51.5s
+[CV] END knn__metric=manhattan, knn__n_neighbors=100, knn__weights=distance, scaler=RobustScaler(); total time=  52.1s
+[CV] END knn__metric=manhattan, knn__n_neighbors=90, knn__weights=distance, scaler=StandardScaler(); total time=  52.6s
+[CV] END knn__metric=manhattan, knn__n_neighbors=100, knn__weights=distance, scaler=StandardScaler(); total time=  52.6s
+[CV] END knn__metric=manhattan, knn__n_neighbors=40, knn__weights=distance, scaler=StandardScaler(); total time=  52.8s
+[CV] END knn__metric=manhattan, knn__n_neighbors=40, knn__weights=distance, scaler=StandardScaler(); total time=  53.2s
+[CV] END knn__metric=manhattan, knn__n_neighbors=40, knn__weights=distance, scaler=StandardScaler(); total time=  53.3s
+[CV] END knn__metric=manhattan, knn__n_neighbors=300, knn__weights=distance, scaler=RobustScaler(); total time=  53.3s
+[CV] END knn__metric=manhattan, knn__n_neighbors=40, knn__weights=distance, scaler=RobustScaler(); total time=  54.3s
+[CV] END knn__metric=manhattan, knn__n_neighbors=80, knn__weights=distance, scaler=RobustScaler(); total time=  54.5s
+[CV] END knn__metric=manhattan, knn__n_neighbors=50, knn__weights=distance, scaler=RobustScaler(); total time=  57.2s
+  Best CV NDCG@5:  0.3452
+  Best Parameters: {'knn__metric': 'manhattan', 'knn__n_neighbors': 300, 'knn__weights': 'distance', 'scaler': RobustScaler()}
+  Validation NDCG@5: 0.3348
+Overall validation NDCG@5: 0.3348
+
+
+=== KNN Neighbour Sweep ===
+
+======================================================================
+KNN NEIGHBOUR SWEEP
+======================================================================
+  Fixed config: RobustScaler | manhattan | distance weighting
+
+  Search size statistics (full training set):
+    Mean hotels per search:   24.8
+    Median hotels per search: 29.0
+    Max hotels per search:    38.0
+
+  Note: KNN learns a global booking probability conditioned on
+  hotel features. Cross-search neighbours are expected and correct
+  — the model generalises across searches rather than memorising
+  search-specific patterns.
+
+  Reference k thresholds:
+    5x mean search size: k = 124
+    10x mean search size: k = 248
+
+  Sweeping k = [100, 120, 140, 160, 180, 200, 220, 240, 260, 280, 300, 320, 340, 360, 380, 400, 420, 440, 460, 480, 500, 520, 540, 560, 580]
+
+  k           CV NDCG@5   Val NDCG@5       Δ CV    Rolling Δ
+  ----------------------------------------------------------
+  100            0.3228       0.3147    +0.0000      +0.0000
+  120            0.3237       0.3175    +0.0009      +0.0009
+  140            0.3303       0.3212    +0.0066      +0.0025
+  160            0.3336       0.3230    +0.0033      +0.0036
+  180            0.3381       0.3256    +0.0045      +0.0048
+  200            0.3395       0.3266    +0.0014      +0.0031
+  220            0.3381       0.3273    -0.0014      +0.0015
+  240            0.3414       0.3286    +0.0033      +0.0011
+  260            0.3416       0.3306    +0.0002      +0.0007
+  280            0.3441       0.3321    +0.0025      +0.0020
+  300            0.3474       0.3336    +0.0033      +0.0020
+  320            0.3467       0.3337    -0.0008      +0.0017
+  340            0.3454       0.3344    -0.0012      +0.0004
+  360            0.3453       0.3352    -0.0001      -0.0007
+  380            0.3466       0.3365    +0.0013      -0.0000
+  400            0.3479       0.3366    +0.0012      +0.0008
+  420            0.3486       0.3375    +0.0007      +0.0011
+  440            0.3469       0.3372    -0.0017      +0.0001
+  460            0.3491       0.3373    +0.0022      +0.0004
+  480            0.3486       0.3385    -0.0005      +0.0000
+  500            0.3500       0.3388    +0.0014      +0.0011
+  520            0.3506       0.3392    +0.0005      +0.0005
+  540            0.3502       0.3395    -0.0003      +0.0005
+  560            0.3503       0.3402    +0.0001      +0.0001
+  580            0.3518       0.3407    +0.0015      +0.0004
+
+  Elbow (rolling Δ < 0.001): k = 260
+  Best CV NDCG@5:  0.3518 at k=580
+  Best Val NDCG@5: 0.3407 at k=580
+
+  Plot saved to: knn_neighbour_sweep.png
+
+  Best k from sweep: 580
+  Best CV NDCG from sweep: 0.3518
+
+======================================================================
+PROMOTION FLAG BIAS ANALYSIS
+======================================================================
+
+--- Check 1 (Data level): Within-search effect, no position control ---
+
+=================================================================
+  CONDITIONAL LOGISTIC REGRESSION — PROMOTION_FLAG
+=================================================================
+  Outcome:          booking_bool
+  Target variable:  promotion_flag
+  Controls used:    ['price_rel', 'is_best_star', 'is_best_review', 'is_cheapest_in_srch', 'prop_brand_bool']
+  N observations:   695,642
+  N searches:       27,768
+  Booking rate:     0.0399
+  Model:            Conditional logistic (conditioned on srch_id)
+
+  Within-search variance check:
+    promotion_flag                      83.6% of searches have variance
+    price_rel                           100.0% of searches have variance
+    is_best_star                        97.1% of searches have variance
+    is_best_review                      99.8% of searches have variance
+    is_cheapest_in_srch                 100.0% of searches have variance
+    prop_brand_bool                     90.6% of searches have variance
+
+  Feature                        Model            Odds Ratio                 95% CI    p-value     
+  --------------------------------------------------------------------------------------------
+  promotion_flag                 Unadjusted            2.151         [2.087, 2.217]     0.0000  ***
+  promotion_flag                 Adjusted              1.951         [1.892, 2.011]     0.0000  ***
+  price_rel                      Adjusted              0.257         [0.244, 0.271]     0.0000  ***
+  is_best_star                   Adjusted              2.204         [2.128, 2.283]     0.0000  ***
+  is_best_review                 Adjusted              1.221         [1.177, 1.266]     0.0000  ***
+  is_cheapest_in_srch            Adjusted              0.975         [0.929, 1.024]     0.3127     
+  prop_brand_bool                Adjusted              1.228         [1.191, 1.267]     0.0000  ***
+
+  --- Interpretation ---
+  Unadjusted: promotion_flag associated with +115.1% higher booking odds within search  (OR=2.151, p=0.0000)
+  Adjusted:   promotion_flag associated with +95.1% higher booking odds within search, controlling for hotel-level characteristics  (OR=1.951, p=0.0000)
+  Attenuation: 9.3% of the within-search promotion_flag effect explained by controls
+  Verdict: statistically significant independent within-search effect — +95.1% higher booking odds after controls
+
+  --- Model fit ---
+  Unadjusted  log-likelihood: -85417.85
+  Adjusted    log-likelihood: -83579.23
+  Likelihood ratio test: LR=3677.24, df=5, p=0.0000e+00
+  Controls significantly improve model fit
+  Note: AIC and pseudo-R² not reported — not appropriate for conditional logistic regression
+
+--- Check 1b (Data level): Within-search effect, log position control ---
+  log_position used per cascade click model (Craswell et al. 2008)
+
+=================================================================
+  CONDITIONAL LOGISTIC REGRESSION — PROMOTION_FLAG
+=================================================================
+  Outcome:          booking_bool
+  Target variable:  promotion_flag
+  Controls used:    ['price_rel', 'is_best_star', 'is_best_review', 'is_cheapest_in_srch', 'prop_brand_bool', 'log_position']
+  N observations:   695,642
+  N searches:       27,768
+  Booking rate:     0.0399
+  Model:            Conditional logistic (conditioned on srch_id)
+
+  Within-search variance check:
+    promotion_flag                      83.6% of searches have variance
+    price_rel                           100.0% of searches have variance
+    is_best_star                        97.1% of searches have variance
+    is_best_review                      99.8% of searches have variance
+    is_cheapest_in_srch                 100.0% of searches have variance
+    prop_brand_bool                     90.6% of searches have variance
+    log_position                        100.0% of searches have variance
+
+  Feature                        Model            Odds Ratio                 95% CI    p-value     
+  --------------------------------------------------------------------------------------------
+  promotion_flag                 Unadjusted            2.151         [2.087, 2.217]     0.0000  ***
+  promotion_flag                 Adjusted              1.119         [1.083, 1.156]     0.0000  ***
+  price_rel                      Adjusted              0.245         [0.232, 0.260]     0.0000  ***
+  is_best_star                   Adjusted              1.475         [1.422, 1.529]     0.0000  ***
+  is_best_review                 Adjusted              1.148         [1.106, 1.192]     0.0000  ***
+  is_cheapest_in_srch            Adjusted              0.894         [0.850, 0.940]     0.0000  ***
+  prop_brand_bool                Adjusted              1.237         [1.199, 1.276]     0.0000  ***
+  log_position                   Adjusted              0.438         [0.434, 0.444]     0.0000  ***
+
+  --- Interpretation ---
+  Unadjusted: promotion_flag associated with +115.1% higher booking odds within search  (OR=2.151, p=0.0000)
+  Adjusted:   promotion_flag associated with +11.9% higher booking odds within search, controlling for hotel-level characteristics  (OR=1.119, p=0.0000)
+  Attenuation: 48.0% of the within-search promotion_flag effect explained by controls
+  Verdict: statistically significant independent within-search effect — +11.9% higher booking odds after controls
+
+  --- Model fit ---
+  Unadjusted  log-likelihood: -85417.85
+  Adjusted    log-likelihood: -74195.28
+  Likelihood ratio test: LR=22445.15, df=6, p=0.0000e+00
+  Controls significantly improve model fit
+  Note: AIC and pseudo-R² not reported — not appropriate for conditional logistic regression
+
+--- Check 1c (Robustness): Random sort searches only ---
+  Position exogenous by design — Expedia randomised display order
+  This is the cleanest available estimate of the genuine promotion effect
+  N searches (random only): 12,041
+
+=================================================================
+  CONDITIONAL LOGISTIC REGRESSION — PROMOTION_FLAG
+=================================================================
+  Outcome:          booking_bool
+  Target variable:  promotion_flag
+  Controls used:    ['price_rel', 'is_best_star', 'is_best_review', 'is_cheapest_in_srch', 'prop_brand_bool', 'log_position']
+  N observations:   37,379
+  N searches:       1,563
+  Booking rate:     0.0418
+  Model:            Conditional logistic (conditioned on srch_id)
+
+  Within-search variance check:
+    promotion_flag                      80.9% of searches have variance
+    price_rel                           100.0% of searches have variance
+    is_best_star                        96.9% of searches have variance
+    is_best_review                      99.9% of searches have variance
+    is_cheapest_in_srch                 100.0% of searches have variance
+    prop_brand_bool                     89.1% of searches have variance
+    log_position                        100.0% of searches have variance
+
+  Feature                        Model            Odds Ratio                 95% CI    p-value     
+  --------------------------------------------------------------------------------------------
+  promotion_flag                 Unadjusted            1.953         [1.711, 2.230]     0.0000  ***
+  promotion_flag                 Adjusted              1.729         [1.508, 1.982]     0.0000  ***
+  price_rel                      Adjusted              0.304         [0.243, 0.380]     0.0000  ***
+  is_best_star                   Adjusted              2.013         [1.737, 2.333]     0.0000  ***
+  is_best_review                 Adjusted              1.268         [1.090, 1.476]     0.0021   **
+  is_cheapest_in_srch            Adjusted              0.950         [0.772, 1.168]     0.6251     
+  prop_brand_bool                Adjusted              1.350         [1.178, 1.548]     0.0000  ***
+  log_position                   Adjusted              0.571         [0.544, 0.599]     0.0000  ***
+
+  --- Interpretation ---
+  Unadjusted: promotion_flag associated with +95.3% higher booking odds within search  (OR=1.953, p=0.0000)
+  Adjusted:   promotion_flag associated with +72.9% higher booking odds within search, controlling for hotel-level characteristics  (OR=1.729, p=0.0000)
+  Attenuation: 11.5% of the within-search promotion_flag effect explained by controls
+  Verdict: statistically significant independent within-search effect — +72.9% higher booking odds after controls
+
+  --- Model fit ---
+  Unadjusted  log-likelihood: -4751.30
+  Adjusted    log-likelihood: -4419.75
+  Likelihood ratio test: LR=663.11, df=6, p=5.6218e-140
+  Controls significantly improve model fit
+  Note: AIC and pseudo-R² not reported — not appropriate for conditional logistic regression
+
+--- Check 2a (Model level): Within-search rank gap ---
+  Measures model behaviour — independent of regression checks above
+
+--- Rank Bias Report   [KNN Baseline] | Target: promotion_flag ---
+  Mean rank promotion_flag=1 (within search): 10.536
+  Mean rank promotion_flag=0 (within search): 14.708
+  Mean rank gap (Class 1 − Class 0): -4.171
+  (negative = feature value 1 is ranked closer to the top)
+  Searches with both attribute types: 33,589
+  Cohen's d (vs zero):  -0.8469  [large effect]
+  95% bootstrap CI on mean gap: [-4.2270, -4.1175]
+  Verdict: bias detected: reliable and meaningful — promotion_flag=1 ranked higher
+
+--- Synthesis ---
+
+  Metric                                                         Value
+  ----------------------------------------------------------------------
+  Within-search OR — unadjusted                                  2.151
+  Within-search OR — adjusted (no position)                      1.951
+  Within-search OR — adjusted (log position)                     1.119
+  OR attenuation from log position                               42.6%
+  Within-search OR — random sort only (robustness)               1.729
+  Model rank gap (KNN)                                         -4.1711  (d=0.86, large)
+
+  Verdict:
+  Log position explains 42.6% of the within-search promotion effect,
+  confirming substantial position bias absorption in the training data.
+  The KNN rank gap of -4.1711 substantially exceeds what the
+  position-adjusted OR of 1.119 justifies — over-learning present.
+  Mitigation requires explicit position control, addressed in LightGBM.
+
+  Robustness check:
+  OR in random sort searches (1.729) vs position-adjusted full sample (1.119)
+  Difference: 54.5%
+  Gap remains between random-sort and position-adjusted estimates — residual position confounding likely
+
+############################################################
+BIAS EVALUATION FOR FEATURE: prop_brand_bool
+############################################################
+
+[Check A] NDCG@5 by booked prop_brand_bool
+
+--- Bias Report   [KNN Baseline — prop_brand_bool] ---
+  Booked prop_brand_bool=1       mean NDCG@5: 0.3531  (n=18,394)
+  Booked prop_brand_bool=0       mean NDCG@5: 0.3690  (n=9,374)
+  Mean gap (Booked prop_brand_bool=1 − Booked prop_brand_bool=0): -0.0159
+  Cohen's d:  -0.0422  [negligible effect]
+  95% bootstrap CI on gap: [-0.0253, -0.0067]
+  CI verdict: Booked prop_brand_bool=0 consistently higher (CI entirely negative)
+  Verdict: bias detected: reliable but small effect — model favours Booked prop_brand_bool=0
+
+[Check B] Within-search rank gap for prop_brand_bool
+
+--- Rank Bias Report   [KNN Baseline — prop_brand_bool] | Target: prop_brand_bool ---
+  Mean rank prop_brand_bool=1 (within search): 13.016
+  Mean rank prop_brand_bool=0 (within search): 13.393
+  Mean rank gap (Class 1 − Class 0): -0.377
+  (negative = feature value 1 is ranked closer to the top)
+  Searches with both attribute types: 36,211
+  Cohen's d (vs zero):  -0.0717  [negligible effect]
+  95% bootstrap CI on mean gap: [-0.4321, -0.3211]
+  Verdict: bias detected: reliable but small effect — prop_brand_bool=1 ranked higher
+
+############################################################
+BIAS EVALUATION FOR FEATURE: new_customer
+############################################################
+
+[Check A] NDCG@5 by booked new_customer
+
+--- Bias Report   [KNN Baseline — new_customer] ---
+  Booked new_customer=1          mean NDCG@5: 0.3581  (n=25,931)
+  Booked new_customer=0          mean NDCG@5: 0.3640  (n=1,837)
+  Mean gap (Booked new_customer=1 − Booked new_customer=0): -0.0059
+  Cohen's d:  -0.0156  [negligible effect]
+  95% bootstrap CI on gap: [-0.0237, +0.0111]
+  CI verdict: CI spans zero — gap not reliably different from 0
+  Verdict: no meaningful bias detected
+
+[Check B] Within-search rank gap for new_customer
+  [Warning] Rank bias not calculated for 'new_customer': all properties within every individual search share the same feature value.
+
+--- Rank Bias Report [KNN Baseline — new_customer] ---
+  Skipped: No valid intra-search variance found for feature 'new_customer'.
+
+############################################################
+BIAS EVALUATION FOR FEATURE: is_cheapest_in_srch
+############################################################
+
+[Check A] NDCG@5 by booked is_cheapest_in_srch
+
+--- Bias Report   [KNN Baseline — is_cheapest_in_srch] ---
+  Booked is_cheapest_in_srch=1   mean NDCG@5: 0.4303  (n=2,313)
+  Booked is_cheapest_in_srch=0   mean NDCG@5: 0.3520  (n=25,455)
+  Mean gap (Booked is_cheapest_in_srch=1 − Booked is_cheapest_in_srch=0): +0.0783
+  Cohen's d:  +0.2080  [small effect]
+  95% bootstrap CI on gap: [+0.0624, +0.0941]
+  CI verdict: Booked is_cheapest_in_srch=1 consistently higher (CI entirely positive)
+  Verdict: bias detected: reliable and meaningful — model favours Booked is_cheapest_in_srch=1
+
+[Check B] Within-search rank gap for is_cheapest_in_srch
+
+--- Rank Bias Report   [KNN Baseline — is_cheapest_in_srch] | Target: is_cheapest_in_srch ---
+  Mean rank is_cheapest_in_srch=1 (within search): 12.888
+  Mean rank is_cheapest_in_srch=0 (within search): 12.943
+  Mean rank gap (Class 1 − Class 0): -0.055
+  (negative = feature value 1 is ranked closer to the top)
+  Searches with both attribute types: 39,959
+  Cohen's d (vs zero):  -0.0078  [negligible effect]
+  95% bootstrap CI on mean gap: [-0.1331, +0.0240]
+  Verdict: no systematic positional preference detected for is_cheapest_in_srch
+
+############################################################
+BIAS EVALUATION FOR FEATURE: is_best_review
+############################################################
+
+[Check A] NDCG@5 by booked is_best_review
+
+--- Bias Report   [KNN Baseline — is_best_review] ---
+  Booked is_best_review=1        mean NDCG@5: 0.3778  (n=5,029)
+  Booked is_best_review=0        mean NDCG@5: 0.3542  (n=22,739)
+  Mean gap (Booked is_best_review=1 − Booked is_best_review=0): +0.0236
+  Cohen's d:  +0.0626  [negligible effect]
+  95% bootstrap CI on gap: [+0.0116, +0.0342]
+  CI verdict: Booked is_best_review=1 consistently higher (CI entirely positive)
+  Verdict: bias detected: reliable but small effect — model favours Booked is_best_review=1
+
+[Check B] Within-search rank gap for is_best_review
+
+--- Rank Bias Report   [KNN Baseline — is_best_review] | Target: is_best_review ---
+  Mean rank is_best_review=1 (within search): 14.187
+  Mean rank is_best_review=0 (within search): 12.862
+  Mean rank gap (Class 1 − Class 0): +1.325
+  (negative = feature value 1 is ranked closer to the top)
+  Searches with both attribute types: 39,875
+  Cohen's d (vs zero):  +0.2096  [small effect]
+  95% bootstrap CI on mean gap: [+1.2671, +1.3877]
+  Verdict: bias detected: reliable and meaningful — is_best_review=0 ranked higher
+
+############################################################
+BIAS EVALUATION FOR FEATURE: is_best_star
+############################################################
+
+[Check A] NDCG@5 by booked is_best_star
+
+--- Bias Report   [KNN Baseline — is_best_star] ---
+  Booked is_best_star=1          mean NDCG@5: 0.4630  (n=8,569)
+  Booked is_best_star=0          mean NDCG@5: 0.3119  (n=19,199)
+  Mean gap (Booked is_best_star=1 − Booked is_best_star=0): +0.1512
+  Cohen's d:  +0.4081  [small effect]
+  95% bootstrap CI on gap: [+0.1419, +0.1607]
+  CI verdict: Booked is_best_star=1 consistently higher (CI entirely positive)
+  Verdict: bias detected: reliable and meaningful — model favours Booked is_best_star=1
+
+[Check B] Within-search rank gap for is_best_star
+
+--- Rank Bias Report   [KNN Baseline — is_best_star] | Target: is_best_star ---
+  Mean rank is_best_star=1 (within search): 11.126
+  Mean rank is_best_star=0 (within search): 13.739
+  Mean rank gap (Class 1 − Class 0): -2.613
+  (negative = feature value 1 is ranked closer to the top)
+  Searches with both attribute types: 38,646
+  Cohen's d (vs zero):  -0.4410  [small effect]
+  95% bootstrap CI on mean gap: [-2.6814, -2.5446]
+  Verdict: bias detected: reliable and meaningful — is_best_star=1 ranked higher
+
+############################################################
+BIAS EVALUATION FOR FEATURE: random_bool
+############################################################
+
+[Check A] NDCG@5 by booked random_bool
+
+--- Bias Report   [KNN Baseline — random_bool] ---
+  Booked random_bool=1           mean NDCG@5: 0.3572  (n=1,563)
+  Booked random_bool=0           mean NDCG@5: 0.3586  (n=26,205)
+  Mean gap (Booked random_bool=1 − Booked random_bool=0): -0.0014
+  Cohen's d:  -0.0037  [negligible effect]
+  95% bootstrap CI on gap: [-0.0211, +0.0176]
+  CI verdict: CI spans zero — gap not reliably different from 0
+  Verdict: no meaningful bias detected
+
+[Check B] Within-search rank gap for random_bool
+  [Warning] Rank bias not calculated for 'random_bool': all properties within every individual search share the same feature value.
+
+--- Rank Bias Report [KNN Baseline — random_bool] ---
+  Skipped: No valid intra-search variance found for feature 'random_bool'.
+
+############################################################
+BIAS EVALUATION FOR FEATURE: srch_saturday_night_bool
+############################################################
+
+[Check A] NDCG@5 by booked srch_saturday_night_bool
+
+--- Bias Report   [KNN Baseline — srch_saturday_night_bool] ---
+  Booked srch_saturday_night_bool=1 mean NDCG@5: 0.3653  (n=14,265)
+  Booked srch_saturday_night_bool=0 mean NDCG@5: 0.3513  (n=13,503)
+  Mean gap (Booked srch_saturday_night_bool=1 − Booked srch_saturday_night_bool=0): +0.0139
+  Cohen's d:  +0.0370  [negligible effect]
+  95% bootstrap CI on gap: [+0.0052, +0.0230]
+  CI verdict: Booked srch_saturday_night_bool=1 consistently higher (CI entirely positive)
+  Verdict: bias detected: reliable but small effect — model favours Booked srch_saturday_night_bool=1
+
+[Check B] Within-search rank gap for srch_saturday_night_bool
+  [Warning] Rank bias not calculated for 'srch_saturday_night_bool': all properties within every individual search share the same feature value.
+
+--- Rank Bias Report [KNN Baseline — srch_saturday_night_bool] ---
+  Skipped: No valid intra-search variance found for feature 'srch_saturday_night_bool'.
+
+############################################################
+BIAS EVALUATION FOR FEATURE: is_last_minute
+############################################################
+
+[Check A] NDCG@5 by booked is_last_minute
+
+--- Bias Report   [KNN Baseline — is_last_minute] ---
+  Booked is_last_minute=1        mean NDCG@5: 0.3569  (n=7,167)
+  Booked is_last_minute=0        mean NDCG@5: 0.3590  (n=20,601)
+  Mean gap (Booked is_last_minute=1 − Booked is_last_minute=0): -0.0021
+  Cohen's d:  -0.0056  [negligible effect]
+  95% bootstrap CI on gap: [-0.0119, +0.0078]
+  CI verdict: CI spans zero — gap not reliably different from 0
+  Verdict: no meaningful bias detected
+
+[Check B] Within-search rank gap for is_last_minute
+  [Warning] Rank bias not calculated for 'is_last_minute': all properties within every individual search share the same feature value.
+
+--- Rank Bias Report [KNN Baseline — is_last_minute] ---
+  Skipped: No valid intra-search variance found for feature 'is_last_minute'.
+
+############################################################
+BIAS EVALUATION FOR FEATURE: is_long_stay
+############################################################
+
+[Check A] NDCG@5 by booked is_long_stay
+
+--- Bias Report   [KNN Baseline — is_long_stay] ---
+  Booked is_long_stay=1          mean NDCG@5: 0.3295  (n=728)
+  Booked is_long_stay=0          mean NDCG@5: 0.3593  (n=27,040)
+  Mean gap (Booked is_long_stay=1 − Booked is_long_stay=0): -0.0298
+  Cohen's d:  -0.0791  [negligible effect]
+  95% bootstrap CI on gap: [-0.0557, -0.0033]
+  CI verdict: Booked is_long_stay=0 consistently higher (CI entirely negative)
+  Verdict: bias detected: reliable but small effect — model favours Booked is_long_stay=0
+
+[Check B] Within-search rank gap for is_long_stay
+  [Warning] Rank bias not calculated for 'is_long_stay': all properties within every individual search share the same feature value.
+
+--- Rank Bias Report [KNN Baseline — is_long_stay] ---
+  Skipped: No valid intra-search variance found for feature 'is_long_stay'.
+  Could not save artefacts (disk quota): [Errno 122] Disk quota exceeded
+  Submission CSV is already saved — that is all you need.
+
+Generating submission...
+Traceback (most recent call last):
+  File "/home/ads312/dmt_knn_7.py", line 2079, in <module>
+    main()
+  File "/home/ads312/dmt_knn_7.py", line 2074, in main
+    make_submission(test, knn_base, model_name="knn-base",
+  File "/home/ads312/dmt_knn_7.py", line 946, in make_submission
+    submission.to_csv(path, index=False)
+  File "/home/ads312/.local/lib/python3.11/site-packages/pandas/core/generic.py", line 3988, in to_csv
+    return DataFrameRenderer(formatter).to_csv(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ads312/.local/lib/python3.11/site-packages/pandas/io/formats/format.py", line 1025, in to_csv
+    csv_formatter.save()
+  File "/home/ads312/.local/lib/python3.11/site-packages/pandas/io/formats/csvs.py", line 251, in save
+    with get_handle(
+  File "/home/ads312/.local/lib/python3.11/site-packages/pandas/io/common.py", line 152, in __exit__
+    self.close()
+  File "/home/ads312/.local/lib/python3.11/site-packages/pandas/io/common.py", line 139, in close
+    handle.close()
+OSError: [Errno 122] Disk quota exceeded
+(python3_env) sh-5.1$ 
